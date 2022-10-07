@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID, uuid4
 
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 
 data = []
@@ -42,9 +42,11 @@ def find_post(id: str):
 
 
 @app.get("/posts/{id}")
-def get_post(id: UUID, response: Response):
+def get_post(id: UUID):
     post = find_post(id)
     if not post:
-        response.status_code = status.HTTP_404_NOT_FOUND
-        return {"detail": f"Post with id {id} is not found"}
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {id} is not found"
+        )
     return post
