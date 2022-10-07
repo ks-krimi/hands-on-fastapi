@@ -47,7 +47,7 @@ def get_post(id: UUID):
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with id {id} is not found"
+            detail=f"Post with id {id} does not exist"
         )
     return post
 
@@ -64,7 +64,7 @@ def remove_post(id: UUID):
     if found_index == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post with id {id} is not found"
+            detail=f"Post with id {id} does not exist"
         )
     data.pop(found_index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
