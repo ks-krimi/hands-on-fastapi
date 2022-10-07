@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID, uuid4
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, Response, status
 from pydantic import BaseModel
 
 data = []
@@ -50,3 +50,21 @@ def get_post(id: UUID):
             detail=f"Post with id {id} is not found"
         )
     return post
+
+
+def find_post_index(id: str):
+    for index, post in enumerate(data):
+        if post.id == id:
+            return index
+
+
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def remove_post(id: UUID):
+    found_index = find_post_index(id)
+    if found_index == None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {id} is not found"
+        )
+    data.pop(found_index)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
