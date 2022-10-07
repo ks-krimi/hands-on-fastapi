@@ -1,3 +1,4 @@
+import re
 from typing import Optional
 from uuid import UUID, uuid4
 
@@ -33,3 +34,10 @@ def create_post(post: Post):
     post.id = uuid4()  # generate new uuid
     data.append(post)
     return post
+
+
+@app.get("/posts/{id}")
+def get_post(id: UUID):
+    for post in data:
+        if post.id == id:
+            return post
