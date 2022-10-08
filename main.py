@@ -68,3 +68,18 @@ def remove_post(id: UUID):
         )
     data.pop(found_index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.put("/posts/{id}")
+def update_post(id: UUID, post: Post):
+    found_index = find_post_index(id)
+    if found_index == None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {id} does not exist"
+        )
+
+    post.id = id  # set id with the params id
+    data[found_index] = post
+
+    return data[found_index]
