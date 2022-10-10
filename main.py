@@ -1,8 +1,14 @@
 from typing import Optional
 from uuid import UUID, uuid4
 
-from fastapi import FastAPI, HTTPException, Response, status
+from fastapi import Depends, FastAPI, HTTPException, Response, status
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+import model
+from database import Base, engine, get_db
+
+Base.metadata.create_all(bind=engine)
 
 data = []
 
@@ -24,8 +30,8 @@ def root():
 
 
 @app.get("/posts")
-def get_posts():
-    return data
+def get_posts(db: Session = Depends(get_db)):
+    return db.query(model.Post).all()
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
