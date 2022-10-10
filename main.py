@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 import models
 from database import Base, engine, get_db
 from schemas import Post, PostCreate, PostUpdate, User, UserCreate
+from utils import hash
 
 Base.metadata.create_all(bind=engine)
 
@@ -71,6 +72,10 @@ def update_post(id: int, post: PostUpdate, db: Session = Depends(get_db)):
 
 @app.post("/users", status_code=status.HTTP_201_CREATED, response_model=User)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
+
+    # hash user's password before to save into db
+    user.password = hash(user.password)
+
     try:
         new_user = models.User(**user.dict())
         db.add(new_user)
