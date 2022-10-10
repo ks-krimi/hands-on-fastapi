@@ -1,9 +1,11 @@
+from typing import List
+
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 import model
 from database import Base, engine, get_db
-from schemas import PostCreate, PostUpdate
+from schemas import Post, PostCreate, PostUpdate
 
 Base.metadata.create_all(bind=engine)
 
@@ -16,12 +18,12 @@ def root():
     return {"hello": "world"}
 
 
-@app.get("/posts")
+@app.get("/posts", response_model=List[Post])
 def get_posts(db: Session = Depends(get_db)):
     return db.query(model.Post).all()
 
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
+@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=Post)
 def create_post(post: PostCreate, db: Session = Depends(get_db)):
     new_post = model.Post(**post.dict())
     db.add(new_post)
@@ -30,7 +32,7 @@ def create_post(post: PostCreate, db: Session = Depends(get_db)):
     return new_post
 
 
-@app.get("/posts/{id}")
+@app.get("/posts/{id}", response_model=Post)
 def get_post(id: int, db: Session = Depends(get_db)):
     post = db.query(model.Post).filter(model.Post.id == id).first()
     if not post:
@@ -54,7 +56,7 @@ def remove_post(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/posts/{id}")
+@app.put("/posts/{id}", response_model=Post)
 def update_post(id: int, post: PostUpdate, db: Session = Depends(get_db)):
     query = db.query(model.Post).filter(model.Post.id == id)
     if query.first() == None:
