@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, text
 
 from database import Base
 
@@ -11,3 +11,7 @@ class Post(Base):
     content = Column(String, nullable=False)
     published = Column(Boolean, server_default="true")
     rating = Column(Integer, server_default="0")
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        server_default=text("(DATETIME('now'))")
+    )
