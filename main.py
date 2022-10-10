@@ -1,5 +1,4 @@
 from fastapi import Depends, FastAPI, HTTPException, Response, status
-
 from sqlalchemy.orm import Session
 
 import model
