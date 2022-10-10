@@ -12,6 +12,6 @@ app.include_router(post.router)
 app.include_router(user.router)
 
 
-@app.get("/")
+@app.get("/", tags=["Root"])
 def root():
     return {"hello": "world"}

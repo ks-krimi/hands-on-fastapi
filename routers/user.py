@@ -5,7 +5,7 @@ from schemas import User, UserCreate
 from sqlalchemy.orm import Session
 from utils import hash
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=User)
