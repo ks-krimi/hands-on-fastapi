@@ -8,3 +8,11 @@ class Post(BaseModel):
     content: str
     published: bool = True
     rating: Optional[int] = 0
+
+
+class PostCreate(Post):
+    pass
+
+
+class PostUpdate(Post):
+    pass
