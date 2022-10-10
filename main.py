@@ -14,7 +14,6 @@ data = []
 
 
 class Post(BaseModel):
-    id: Optional[UUID] = uuid4()
     title: str
     content: str
     published: bool = True
@@ -35,10 +34,12 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: Post):
-    post.id = uuid4()  # generate new uuid
-    data.append(post)
-    return post
+def create_post(post: Post, db: Session = Depends(get_db)):
+    new_post = model.Post(**post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return new_post
 
 
 def find_post(id: str):
