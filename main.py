@@ -49,8 +49,8 @@ def find_post(id: str):
 
 
 @app.get("/posts/{id}")
-def get_post(id: UUID):
-    post = find_post(id)
+def get_post(id: int, db: Session = Depends(get_db)):
+    post = db.query(model.Post).filter(model.Post.id == id).first()
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
