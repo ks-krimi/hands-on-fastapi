@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 import model
 from database import Base, engine, get_db
-from schemas import Post
+from schemas import PostCreate, PostUpdate
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,7 +22,7 @@ def get_posts(db: Session = Depends(get_db)):
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post(post: Post, db: Session = Depends(get_db)):
+def create_post(post: PostCreate, db: Session = Depends(get_db)):
     new_post = model.Post(**post.dict())
     db.add(new_post)
     db.commit()
@@ -55,7 +55,7 @@ def remove_post(id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{id}")
-def update_post(id: int, post: Post, db: Session = Depends(get_db)):
+def update_post(id: int, post: PostUpdate, db: Session = Depends(get_db)):
     query = db.query(model.Post).filter(model.Post.id == id)
     if query.first() == None:
         raise HTTPException(
