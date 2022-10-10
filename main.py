@@ -6,15 +6,9 @@ from sqlalchemy.orm import Session
 
 import model
 from database import Base, engine, get_db
+from schemas import Post
 
 Base.metadata.create_all(bind=engine)
-
-
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool = True
-    rating: Optional[int] = 0
 
 
 app = FastAPI()
