@@ -60,14 +60,15 @@ def find_post_index(id: str):
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def remove_post(id: UUID):
-    found_index = find_post_index(id)
-    if found_index == None:
+def remove_post(id: int, db: Session = Depends(get_db)):
+    post = db.query(model.Post).filter(model.Post.id == id)
+    if post.first() == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {id} does not exist"
         )
-    data.pop(found_index)
+    post.delete(synchronize_session=False)
+    db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
