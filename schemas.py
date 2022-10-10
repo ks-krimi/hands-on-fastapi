@@ -3,16 +3,16 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class Post(BaseModel):
+class PostBase(BaseModel):
     title: str
     content: str
     published: bool = True
     rating: Optional[int] = 0
 
 
-class PostCreate(Post):
+class PostCreate(PostBase):
     pass
 
 
-class PostUpdate(Post):
+class PostUpdate(PostBase):
     pass
