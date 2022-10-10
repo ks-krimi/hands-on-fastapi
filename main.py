@@ -42,12 +42,6 @@ def create_post(post: Post, db: Session = Depends(get_db)):
     return new_post
 
 
-def find_post(id: str):
-    for post in data:
-        if post.id == id:
-            return post
-
-
 @app.get("/posts/{id}")
 def get_post(id: int, db: Session = Depends(get_db)):
     post = db.query(model.Post).filter(model.Post.id == id).first()
