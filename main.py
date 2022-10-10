@@ -53,12 +53,6 @@ def get_post(id: int, db: Session = Depends(get_db)):
     return post
 
 
-def find_post_index(id: str):
-    for index, post in enumerate(data):
-        if post.id == id:
-            return index
-
-
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def remove_post(id: int, db: Session = Depends(get_db)):
     post = db.query(model.Post).filter(model.Post.id == id)
