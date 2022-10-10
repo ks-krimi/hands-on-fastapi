@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 import model
 from database import Base, engine, get_db
-from schemas import Post, PostCreate, PostUpdate
+from schemas import Post, PostCreate, PostUpdate, User, UserCreate
 
 Base.metadata.create_all(bind=engine)
 
@@ -67,3 +67,18 @@ def update_post(id: int, post: PostUpdate, db: Session = Depends(get_db)):
     query.update(post.dict(), synchronize_session=False)
     db.commit()
     return query.first()
+
+
+@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=User)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    try:
+        new_user = model.User(**user.dict())
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return new_user
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"{user.email} is already used"
+        )
