@@ -9,5 +9,5 @@ class Post(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
-    published = Column(Boolean, default=True)
-    rating = Column(Integer, default=0)
+    published = Column(Boolean, server_default="true")
+    rating = Column(Integer, server_default="0")
