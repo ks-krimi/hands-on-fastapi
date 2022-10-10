@@ -73,15 +73,13 @@ def remove_post(id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{id}")
-def update_post(id: UUID, post: Post):
-    found_index = find_post_index(id)
-    if found_index == None:
+def update_post(id: int, post: Post, db: Session = Depends(get_db)):
+    query = db.query(model.Post).filter(model.Post.id == id)
+    if query.first() == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id {id} does not exist"
         )
-
-    post.id = id  # set id with the params id
-    data[found_index] = post
-
-    return data[found_index]
+    query.update(post.dict(), synchronize_session=False)
+    db.commit()
+    return query.first()
