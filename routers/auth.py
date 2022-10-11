@@ -5,7 +5,7 @@ from database import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from oauth2 import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
-from schemas import Token, UserLogin
+from schemas import Token
 from sqlalchemy.orm import Session
 from utils import verify
 
