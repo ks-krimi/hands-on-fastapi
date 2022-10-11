@@ -49,3 +49,9 @@ class User(BaseModel):
 
 class UserLogin(UserBase):
     pass
+
+
+# schema for access token
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "Bearer"
