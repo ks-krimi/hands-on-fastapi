@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import models
 from database import get_db
@@ -11,8 +11,10 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
 @router.get("/", response_model=List[Post])
-def get_posts(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return db.query(models.Post).all()
+def get_posts(limit: int = 10, skip: int = 0, q: Optional[str] = "", db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return db.query(models.Post).\
+        filter(models.Post.content.contains(q)).\
+        limit(limit).offset(skip).all()
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=Post)
