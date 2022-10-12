@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel, EmailStr
 
@@ -55,3 +55,7 @@ class UserLogin(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str = "Bearer"
+
+
+class TokenData(BaseModel):
+    id: Union[str, None] = None
