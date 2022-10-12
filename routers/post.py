@@ -3,19 +3,20 @@ from typing import List
 import models
 from database import get_db
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from schemas import Post, PostCreate, PostUpdate
+from oauth2 import get_current_user
+from schemas import Post, PostCreate, PostUpdate, TokenData
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
 @router.get("/", response_model=List[Post])
-def get_posts(db: Session = Depends(get_db)):
+def get_posts(db: Session = Depends(get_db), token: TokenData = Depends(get_current_user)):
     return db.query(models.Post).all()
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=Post)
-def create_post(post: PostCreate, db: Session = Depends(get_db)):
+def create_post(post: PostCreate, db: Session = Depends(get_db), token: TokenData = Depends(get_current_user)):
     new_post = models.Post(**post.dict())
     db.add(new_post)
     db.commit()
@@ -24,7 +25,7 @@ def create_post(post: PostCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/{id}", response_model=Post)
-def get_post(id: int, db: Session = Depends(get_db)):
+def get_post(id: int, db: Session = Depends(get_db), token: TokenData = Depends(get_current_user)):
     post = db.query(models.Post).filter(models.Post.id == id).first()
     if not post:
         raise HTTPException(
@@ -35,7 +36,7 @@ def get_post(id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def remove_post(id: int, db: Session = Depends(get_db)):
+def remove_post(id: int, db: Session = Depends(get_db), token: TokenData = Depends(get_current_user)):
     post = db.query(models.Post).filter(models.Post.id == id)
     if post.first() == None:
         raise HTTPException(
@@ -48,7 +49,7 @@ def remove_post(id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{id}", response_model=Post)
-def update_post(id: int, post: PostUpdate, db: Session = Depends(get_db)):
+def update_post(id: int, post: PostUpdate, db: Session = Depends(get_db), token: TokenData = Depends(get_current_user)):
     query = db.query(models.Post).filter(models.Post.id == id)
     if query.first() == None:
         raise HTTPException(
